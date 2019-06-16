@@ -15,27 +15,26 @@
 class Settings:
     """Simple structure and parser for application settings."""
 
-    def __init__(self, path, Debug):
-        if Debug:
-            print("Loading configuration from '{0}'".format(path))
+    def __init__(self, input, verbose):
+        if verbose:
+            print("Loading configuration from '{0}'".format(input.name))
 
-        with open(path) as config:
-            for line in config:
-                line = line.rstrip()
-                if not line:
-                    continue
-                if line.startswith('#') or line.startswith(';'):
-                    continue
-                field, value = line.split('=')
-                # print("varname: '{0}'\tvalue: '{1}'".format(field, value))
+        for line in input:
+            line = line.rstrip()
+            if not line:
+                continue
+            if line.startswith('#') or line.startswith(';'):
+                continue
+            field, value = line.split('=')
+            # print("varname: '{0}'\tvalue: '{1}'".format(field, value))
 
-                if field == 'pod':
-                    self.pod = value
-                elif field == 'username':
-                    self.username = value
-                elif field == 'password':
-                    self.password = value
-                elif field == 'feed':
-                    self.feed = value
-                elif field == 'database':
-                    self.database = value
+            if field == 'pod':
+                self.pod = value
+            elif field == 'username':
+                self.username = value
+            elif field == 'password':
+                self.password = value
+            elif field == 'feed':
+                self.feed = value
+            elif field == 'database':
+                self.database = value

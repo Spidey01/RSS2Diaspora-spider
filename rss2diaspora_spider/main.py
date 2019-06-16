@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import argparse
 import sys
 
 # TODO: replace these with my own code.
@@ -21,31 +22,35 @@ from rss2diaspora_spider.settings import Settings
 
 import sys
 
-# Set to true if first argv is 'debug'
-# Debug = False
-Debug = True
+def parse_args():
+    """Return an argparse."""
+    parser = argparse.ArgumentParser(prog=sys.argv[0])
 
+#    parser.add_argument(["verbose", "--verbose", "-v"], help="Enable verbose output.")
+
+    parser.add_argument('-v, --verbose',  dest='verbose', action='store_true', default=False)
+
+    parser.add_argument("-s, --settings", dest='settings', metavar='FILE', type=argparse.FileType('rt'), help="Load settings form FILE.")
+
+    return parser.parse_args()
 
 def main():
 
-    try:
-        if sys.argv[1].lower() == "debug":
-            Debug = True
-    except:
-        pass
-    print("Debug: {0}".format(Debug))
+    args = parse_args()
 
-    me = Settings("config.txt", Debug)
-    print("Me: '{0}' on '{1}' using feed '{2}'".format(me.username, me.pod, me.feed))
+    me = Settings(args.settings, args.verbose)
 
-    if Debug:
+    if args.verbose:
+        print("Me: '{0}' on '{1}' using feed '{2}'".format(me.username, me.pod, me.feed))
+
+    if args.verbose:
         print("Creating RSS feed parser")
     rss = RSSParser(url=me.feed)
 
-    if Debug:
+    if args.verbose:
         print("Creating FeedDiasp bot")
     bot = FeedDiasp(parser=rss, pod=me.pod, username=me.username, password=me.password, db=me.database)
 
-    if Debug:
+    if args.verbose:
         print("Publishing new posts to {0}".format(me.pod))
     bot.publish()
