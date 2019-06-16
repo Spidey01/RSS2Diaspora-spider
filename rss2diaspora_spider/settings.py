@@ -16,7 +16,8 @@ class Settings:
     """Simple structure and parser for application settings."""
 
     def __init__(self, input, verbose):
-        if verbose:
+        self.verbose = verbose
+        if self.verbose:
             print("Loading configuration from '{0}'".format(input.name))
 
         for line in input:

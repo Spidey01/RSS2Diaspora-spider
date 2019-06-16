@@ -8,7 +8,7 @@ This is program for converting an [RSS feed](https://en.wikipedia.org/wiki/RSS) 
 
 ### From Git checkout ###
 
-Make sure you have Python 3 installed and in path.
+Make sure you have Python 3 and [pandoc](https://pandoc.org/) installed and in path.
 
 If you want to create a virtual environment just to run this app:
 

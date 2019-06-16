@@ -16,8 +16,11 @@ import argparse
 import sys
 
 # TODO: replace these with my own code.
-from feeddiasp import FeedDiasp, FBParser, RSSParser
+# from feeddiasp import FeedDiasp, FBParser, RSSParser
 
+from rss2diaspora_spider import rss
+from rss2diaspora_spider.diaspora import Diaspora
+from rss2diaspora_spider.post import Post
 from rss2diaspora_spider.settings import Settings
 
 import sys
@@ -26,11 +29,11 @@ def parse_args():
     """Return an argparse."""
     parser = argparse.ArgumentParser(prog=sys.argv[0])
 
-#    parser.add_argument(["verbose", "--verbose", "-v"], help="Enable verbose output.")
-
     parser.add_argument('-v, --verbose',  dest='verbose', action='store_true', default=False)
 
     parser.add_argument("-s, --settings", dest='settings', metavar='FILE', type=argparse.FileType('rt'), help="Load settings form FILE.")
+
+    parser.add_argument("--only-database", dest='only_database', action='store_true', default=False, help="Parse feed into database but do not post.")
 
     return parser.parse_args()
 
@@ -43,14 +46,9 @@ def main():
     if args.verbose:
         print("Me: '{0}' on '{1}' using feed '{2}'".format(me.username, me.pod, me.feed))
 
-    if args.verbose:
-        print("Creating RSS feed parser")
-    rss = RSSParser(url=me.feed)
+    parser = rss.Parser(me.feed, me.verbose)
+    bot = Diaspora(me.pod, me.username, me.password, args.verbose)
 
-    if args.verbose:
-        print("Creating FeedDiasp bot")
-    bot = FeedDiasp(parser=rss, pod=me.pod, username=me.username, password=me.password, db=me.database)
-
-    if args.verbose:
-        print("Publishing new posts to {0}".format(me.pod))
-    bot.publish()
+    for post in parser.get():
+        if args.verbose:
+            print("Post: RSS id: '{0}' title: {1} link: {2} content: ... tags: {3}".format(post.id, post.link, post.title, post.tags))
