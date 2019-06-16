@@ -1,0 +1,16 @@
+*.pyc
+*.pyd
+dist/*
+
+# venv setup.
+
+python/*
+
+# Editor related
+
+*.sw?
+*.vscode
+
+# Etc.
+
+tmp/*
