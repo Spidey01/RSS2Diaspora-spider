@@ -1,6 +1,8 @@
 *.pyc
 *.pyd
 dist/*
+build/*
+*.egg-info
 
 # venv setup.
 

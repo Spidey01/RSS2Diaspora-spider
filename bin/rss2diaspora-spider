@@ -1,0 +1,5 @@
+#!/usr/bin/env python
+
+import rss2diaspora_spider
+
+rss2diaspora_spider.main.main()
