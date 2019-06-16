@@ -14,8 +14,38 @@
 
 import sys
 
-def main():
-    print("Hello, world!")
+# TODO: replace these with my own code.
+from feeddiasp import FeedDiasp, FBParser, RSSParser
 
-    for arg in sys.argv:
-        print("arg: {0}".format(arg))
+from rss2diaspora_spider.settings import Settings
+
+import sys
+
+# Set to true if first argv is 'debug'
+# Debug = False
+Debug = True
+
+
+def main():
+
+    try:
+        if sys.argv[1].lower() == "debug":
+            Debug = True
+    except:
+        pass
+    print("Debug: {0}".format(Debug))
+
+    me = Settings("config.txt", Debug)
+    print("Me: '{0}' on '{1}' using feed '{2}'".format(me.username, me.pod, me.feed))
+
+    if Debug:
+        print("Creating RSS feed parser")
+    rss = RSSParser(url=me.feed)
+
+    if Debug:
+        print("Creating FeedDiasp bot")
+    bot = FeedDiasp(parser=rss, pod=me.pod, username=me.username, password=me.password, db=me.database)
+
+    if Debug:
+        print("Publishing new posts to {0}".format(me.pod))
+    bot.publish()
