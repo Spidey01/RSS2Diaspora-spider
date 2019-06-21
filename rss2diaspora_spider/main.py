@@ -51,6 +51,8 @@ def main():
     parser = rss.Parser(me.feed, me.verbose)
     bot = Diaspora(me.pod, me.username, me.password, args.verbose)
 
+    bot.login()
+
     for post in parser.get():
         if args.verbose:
             print("Post: RSS id: '{0}' title: {1} link: {2} content: ... tags: {3}".format(post.id, post.link, post.title, post.tags))
@@ -62,6 +64,7 @@ def main():
             continue
 
         if not me.only_database:
-            print("TODO: make post!")
+            bot.publish(post)
 
+        # store after publish: so if there's failure there will be retries!
         db.store(post)

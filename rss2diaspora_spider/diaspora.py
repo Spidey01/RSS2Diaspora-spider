@@ -22,6 +22,7 @@ class Diaspora:
         self.username = username
         self.password = password
         self.verbose = verbose
+        self.logged_in = False
 
     def login(self):
         if self.verbose:
@@ -30,6 +31,48 @@ class Diaspora:
         try:
             self._connection = diaspy.connection.Connection(pod=self.pod, username=self.username, password=self.password)
             self._connection.login()
+            self._stream = diaspy.streams.Stream(self._connection, fetch=False)
+            self.logged_in = True
         except Exception as e:
             print("Diaspora.login() failed: {0}".format(e))
             raise Exception(str(e))
+
+    def publish(self, post):
+        """Publish a Post instance to diaspora."""
+        assert post is not None, "No post provided"
+        assert self.logged_in, "Not logged in."
+
+        shameless_plug = "RSS2Diaspora_spider prototype"
+
+        if self.verbose:
+            print("Formatting: Post: id: {0}".format(post.id))
+
+        #markdown = post.content
+        markdown = ""
+        if not markdown:
+            markdown = post.summary
+
+        # Would be nice if an option could control this.
+        # --option x 'foo bar' -> '#foobar'
+        # --option y 'foo bar' -> '#foo_bar'
+        hashtags = ' '.join([ '#{0}'.format(t.replace(' ', '')) for t in post.tags ])
+
+        text = """
+{3}
+
+***
+
+*Tags*: {4}
+Posted from [{0}]({1})
+
+""".format(post.title, post.link, post.title, markdown, hashtags)
+
+        if self.verbose:
+            print("Publishing: Post: id: {0}".format(post.id))
+
+        # Would be nice to have a setting for the aspect_ids=str.
+        # Default is 'public', and diaspy docs don't say how to format the value.
+        # print(text)
+        self._stream.post(text, provider_display_name=shameless_plug)
+
+
