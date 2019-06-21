@@ -35,4 +35,4 @@ class Parser:
         """
 
         for entry in self.parser.entries:
-            yield Post(entry, self.verbose)
+            yield Post(entry, "rss", self.verbose)

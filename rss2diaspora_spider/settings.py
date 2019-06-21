@@ -17,7 +17,7 @@ import sys
 class Settings:
     """Simple structure and parser for application settings."""
 
-    def __init__(self, input, verbose):
+    def __init__(self, input, verbose, only_database):
         if input is None:
             print("No settings file specified.")
             sys.exit(127)
@@ -25,6 +25,8 @@ class Settings:
         self.verbose = verbose
         if self.verbose:
             print("Loading configuration from '{0}'".format(input.name))
+
+        self.only_database = only_database
 
         for line in input:
             line = line.rstrip()

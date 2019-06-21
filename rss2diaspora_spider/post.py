@@ -14,16 +14,64 @@
 
 import pypandoc
 
+import json
 import sys
+
+from collections import namedtuple
 
 class Post:
     """Object representing a post."""
 
-    def __init__(self, entry, verbose):
+    def __init__(self, entry, format, verbose):
         """Create the data.
 
-        entry - the feedparser entry to parse.
+        entry - the feedparser or json entry to parse.
         """
+        self.verbose = verbose
+
+        if format == "rss":
+            self.parse_rss(entry)
+        elif format == "json":
+            self.parse_json(entry)
+        else:
+            print("Post: Unknown format: {0}".format(format))
+            sys.exit(0)
+
+
+    def _to_markdown(self, data):
+        """Return data converted to markdown."""
+        try:
+            return pypandoc.convert(data, 'md', format='html')
+        except OSError as nopandoc:
+            print(str(nopandoc))
+            sys.exit(127)
+
+    def to_json(self):
+        """Returns a JSON representation of self."""
+        post = {
+            'id': self.id,
+            "link": self.link,
+            "title": self.title,
+            "summary": self.summary,
+            "content": self.content,
+            "tags": self.tags
+        }
+        return json.JSONEncoder().encode(post)
+
+    def parse_json(self, entry):
+        """Fills out our fields from JSON entry."""
+
+        o = json.loads(entry)
+
+        self.id = o["id"]
+        self.link = o["link"]
+        self.title = o["title"]
+        self.summary = o["summary"]
+        self.content = o["content"]
+        self.tags = o["tags"]
+
+    def parse_rss(self, entry):
+        """Fills out our fields from RSS entry."""
 
         self.id = entry.id
         self.link = entry.link
@@ -41,16 +89,8 @@ class Post:
         if 'tags' in entry:
             for tag in entry['tags']:
                 # term should convert to '#hashtag' I think; label is human readable and optional...
-                # if verbose:
+                # if self.verbose:
                 #     print("Found tag: term:{0} scheme:{1} label:{2}".format(tag['term'], tag['scheme'], tag['label']))
 
                 if 'term' in tag:
                     self.tags.append(tag['term'])
-
-    def _to_markdown(self, data):
-        """Return data converted to markdown."""
-        try:
-            return pypandoc.convert(data, 'md', format='html')
-        except OSError as nopandoc:
-            print(str(nopandoc))
-            sys.exit(127)
