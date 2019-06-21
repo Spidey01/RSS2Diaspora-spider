@@ -41,7 +41,9 @@ class Post:
     def _to_markdown(self, data):
         """Return data converted to markdown."""
         try:
-            return pypandoc.convert(data, 'md', format='html')
+            # need to disable wraps or bad line breaks from sources like Blogger.
+            args = ['--wrap', 'none']
+            return pypandoc.convert(data, 'commonmark', format='html', extra_args=args)
         except OSError as nopandoc:
             print(str(nopandoc))
             sys.exit(127)
