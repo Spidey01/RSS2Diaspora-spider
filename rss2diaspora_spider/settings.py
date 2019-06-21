@@ -12,10 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
+
 class Settings:
     """Simple structure and parser for application settings."""
 
     def __init__(self, input, verbose):
+        if input is None:
+            print("No settings file specified.")
+            sys.exit(127)
+
         self.verbose = verbose
         if self.verbose:
             print("Loading configuration from '{0}'".format(input.name))
