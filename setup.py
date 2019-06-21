@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="RSS2Diaspora-Spider-spidey01",
+    name="rss2diaspora_spider-Spidey01",
     version="0.0.1",
     author="Terry M. Poulin",
     author_email="BigBoss1964@gmail.com",
