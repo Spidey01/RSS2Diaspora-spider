@@ -59,7 +59,7 @@ def main():
 
         if db.has(post):
             if me.verbose:
-                print("Post: id: '{0}' already in database. Skipping")
+                print("Post: id: '{0}' already in database. Skipping".format(post.id))
             dummy = db.load(post.id)
             continue
 
