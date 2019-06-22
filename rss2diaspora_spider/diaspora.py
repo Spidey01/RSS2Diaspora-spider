@@ -65,14 +65,14 @@ class Diaspora:
         # --option y 'foo bar' -> '#foo_bar'
         hashtags = ' '.join([ '#{0}'.format(t.translate(HASH_TAG_TRANSLATION)) for t in post.tags ])
         text = """
-{3}
+{2}
 
 ***
 
-*Tags*: {4}
+*Tags*: {3}
 Posted from [{0}]({1})
 
-""".format(post.title, post.link, post.title, markdown, hashtags)
+""".format(post.title, post.link, markdown, hashtags)
 
         if self.verbose:
             print("Publishing: Post: id: {0}".format(post.id))
