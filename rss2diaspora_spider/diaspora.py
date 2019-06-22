@@ -14,6 +14,13 @@
 
 import diaspy
 
+import string
+
+#
+# Table for str.translate() to convert words into valid #hashtags.
+#
+HASH_TAG_TRANSLATION = str.maketrans('', '', string.punctuation + string.whitespace)
+
 class Diaspora:
     """Interface to Diaspora. """
 
@@ -55,8 +62,7 @@ class Diaspora:
         # Would be nice if an option could control this.
         # --option x 'foo bar' -> '#foobar'
         # --option y 'foo bar' -> '#foo_bar'
-        hashtags = ' '.join([ '#{0}'.format(t.replace(' ', '')) for t in post.tags ])
-
+        hashtags = ' '.join([ '#{0}'.format(t.translate(HASH_TAG_TRANSLATION)) for t in post.tags ])
         text = """
 {3}
 
