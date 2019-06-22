@@ -20,14 +20,17 @@ from rss2diaspora_spider.post import Post
 class Database:
     """Handle storing Posts."""
 
-    def __init__(self, path, verbose):
+    def __init__(self, path, verbose, dry_run):
         self.verbose = verbose
+        self.dry_run = dry_run
         self.path = path
         if self.verbose:
             print("Database is '{0}'".format(self.path))
 
     def has(self, post):
         """Returns true if Post instance is stored in the database."""
+        if self.dry_run and post.id:
+            return False
         with dbm.open(self.path, 'c') as handle:
             return post.id in handle
 
@@ -39,7 +42,10 @@ class Database:
         if self.verbose:
             print("Storing Post: id: {0}".format(post.id))
         with dbm.open(self.path, 'c') as handle:
-            handle[post.id] = post.to_json()
+            h = handle
+            if self.dry_run:
+                h = {}
+            h[post.id] = post.to_json()
 
     def load(self, id):
         """Returns a Post instance for id."""

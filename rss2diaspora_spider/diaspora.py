@@ -24,11 +24,12 @@ HASH_TAG_TRANSLATION = str.maketrans('', '', string.punctuation + string.whitesp
 class Diaspora:
     """Interface to Diaspora. """
 
-    def __init__(self, pod, username, password, verbose):
+    def __init__(self, pod, username, password, verbose, dry_run):
         self.pod = pod
         self.username = username
         self.password = password
         self.verbose = verbose
+        self.dry_run = dry_run
         self.logged_in = False
 
     def login(self):
@@ -79,6 +80,10 @@ Posted from [{0}]({1})
         # Would be nice to have a setting for the aspect_ids=str.
         # Default is 'public', and diaspy docs don't say how to format the value.
         # print(text)
+        if self.dry_run:
+            print("dry run: converted text follows:")
+            print(text)
+            return
         self._stream.post(text, provider_display_name=shameless_plug)
 
 

@@ -36,20 +36,24 @@ def parse_args():
 
     parser.add_argument("--only-database", dest='only_database', action='store_true', default=False, help="Parse feed into database but do not post.")
 
+    parser.add_argument("-n, --dry-run", dest='dry_run', action='store_true', default=False, help="Don't actually database or publish. Just log")
+
     return parser.parse_args()
 
 def main():
 
     args = parse_args()
 
-    me = Settings(args.settings, args.verbose, args.only_database)
+    me = Settings(args.settings, args.verbose, args.only_database, args.dry_run)
 
-    if args.verbose:
+    if me.verbose:
         print("Me: '{0}' on '{1}' using feed '{2}'".format(me.username, me.pod, me.feed))
+    if me.dry_run:
+        print("Dry run mode")
 
-    db = Database(me.database, me.verbose)
+    db = Database(me.database, me.verbose, me.dry_run)
     parser = rss.Parser(me.feed, me.verbose)
-    bot = Diaspora(me.pod, me.username, me.password, args.verbose)
+    bot = Diaspora(me.pod, me.username, me.password, me.verbose, me.dry_run)
 
     bot.login()
 
