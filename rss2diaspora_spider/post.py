@@ -43,7 +43,7 @@ class Post:
         try:
             # need to disable wraps or bad line breaks from sources like Blogger.
             args = ['--wrap', 'none']
-            return pypandoc.convert(data, 'commonmark', format='html', extra_args=args)
+            return pypandoc.convert(data, 'commonmark', format='html-native_divs-native_spans', extra_args=args)
         except OSError as nopandoc:
             print(str(nopandoc))
             sys.exit(127)
