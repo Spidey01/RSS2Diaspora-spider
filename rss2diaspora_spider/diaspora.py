@@ -82,7 +82,9 @@ Posted from [{0}]({1})
         # print(text)
         if self.dry_run:
             print("dry run: converted text follows:")
-            print(text)
+            # possible UnicodeEncodeError -- e.g. python codec for cp1252 !=
+            # emoji happy.
+            print(text.encode('utf-8', 'ignore'))
             return
         self._stream.post(text, provider_display_name=shameless_plug)
 
